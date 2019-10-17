@@ -123,10 +123,11 @@ for i in ${!subj7List[@]}; do
 	# epi
 	for j in ${!epiDirs[@]}; do
 
-		pos=$(($j+1))
+		sessDesc=`dicom_hdr ${dataDir}/${epiDirs[$j]}/IM*-0001.dcm | grep "0008 103e" | sed 's/.*\///'`
+		pos=${sessDesc#run}
 
 		if [ ! -f ${funcDir}/${subjP}_${task}_run-${pos}_bold.nii.gz ]; then
-			dcm2niix -b y -ba y -z y -o $funcDir -f ${subjP}_${task}_run-${pos}_bold ${dataDir}/${epiDirs[$j]}*/
+			dcm2niix -b y -ba y -z y -o $funcDir -f ${subjP}_${task}_run-${pos}_bold ${dataDir}/${epiDirs[$j]}/
 		fi
 
 		# Json append by Brock Kirwan
