@@ -27,7 +27,7 @@ tempDir=/Volumes/Yorick/Templates
 pheroList=(`cat ${docDir}/subjects.txt | awk '{print $1}'`)
 subj7List=(`cat ${docDir}/subjects.txt | awk '{print $2}'`)
 
-session=WiscoPheromones										# scanning session - for raw data organization (ses-STT)
+session=WiscoPheromone										# scanning session - for raw data organization (ses-STT)
 task=task-olf												# name of task, for epi data naming
 epiDirs=(L P{1,2})											# epi dicom directory name/prefix
 t1Dir=t1													# t1 ditto
@@ -104,7 +104,7 @@ for i in ${!subj7List[@]}; do
 
 
 	### construct data
-	dataDir=${rawDir}/${subj7}/ses-${session}/dicom
+	dataDir=${rawDir}/${subj7}/ses-${session}*/dicom
 
 	# t1 data
 	if [ ! -f ${anatDir}/${subjP}_T1w.nii.gz ]; then
