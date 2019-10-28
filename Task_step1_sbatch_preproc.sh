@@ -49,8 +49,8 @@ priorDir=${tempDir}/priors_ACT
 
 blip=0										# blip toggle (1=on)
 
-phaseArr=(Test)								# Each PHASE of experiment, in order (TEST1 precedes TEST2 but followed STUDY). This is absolutely necessary - so put something here
-blockArr=(3)   								# number of blocks (runs) in each phase. E.g. STUDY had 1 block, TEST1 had 2 blocks. INTEGER!
+phaseArr=(Odor)								# Each PHASE of experiment, in order (TEST1 precedes TEST2 but followed STUDY). This is absolutely necessary - so put something here
+blockArr=(3)								# number of blocks (runs) in each phase. E.g. STUDY had 1 block, TEST1 had 2 blocks. INTEGER!
 phaseLen=${#phaseArr[@]}
 
 
