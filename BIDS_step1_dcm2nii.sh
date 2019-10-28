@@ -27,9 +27,9 @@ tempDir=/Volumes/Yorick/Templates
 pheroList=(`cat ${docDir}/subjects.txt | awk '{print $1}'`)
 subj7List=(`cat ${docDir}/subjects.txt | awk '{print $2}'`)
 
-session=WiscoPheromone										# scanning session - for raw data organization (ses-STT)
-task=task-olf												# name of task, for epi data naming
-epiDirs=(L P{1,2})											# epi dicom directory name/prefix
+session=WiscoPheromones										# scanning session - for raw data organization (ses-STT)
+task=task-WiscoPhero										# name of task, for epi data naming
+epiDirs=(P{1,2} L)											# epi dicom directory name/prefix. Run1=P1, Run2=P2, Run3=L
 t1Dir=t1													# t1 ditto
 
 
@@ -104,7 +104,7 @@ for i in ${!subj7List[@]}; do
 
 
 	### construct data
-	dataDir=${rawDir}/${subj7}/ses-${session}*/dicom
+	dataDir=${rawDir}/${subj7}/ses-${session}/dicom
 
 	# t1 data
 	if [ ! -f ${anatDir}/${subjP}_T1w.nii.gz ]; then
@@ -123,8 +123,7 @@ for i in ${!subj7List[@]}; do
 	# epi
 	for j in ${!epiDirs[@]}; do
 
-		sessDesc=`dicom_hdr ${dataDir}/${epiDirs[$j]}/IM*-0001.dcm | grep "0008 103e" | sed 's/.*\///'`
-		pos=${sessDesc#run}
+		pos=$(($j+1))
 
 		if [ ! -f ${funcDir}/${subjP}_${task}_run-${pos}_bold.nii.gz ]; then
 			dcm2niix -b y -ba y -z y -o $funcDir -f ${subjP}_${task}_run-${pos}_bold ${dataDir}/${epiDirs[$j]}/
