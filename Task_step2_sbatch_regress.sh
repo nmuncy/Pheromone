@@ -51,6 +51,7 @@ stimCode=$3
 
 parDir=~/compute/SleepBrain_BIDS					  			# parent dir, where derivatives is located
 workDir=${parDir}/derivatives/$subj
+timingRaw=${parDir}/stimuli/stim_vectors
 
 txtFile=0														# whether timing files are in txt format (1) or 1D (0)
 txtTime=0														# if txt file has block duration (1:3) for pmBLOCK (1=on)
@@ -263,6 +264,46 @@ GenDecon (){
     -x1D_uncensored X.${h_out}.nocensor.xmat.1D \
     -bucket ${h_out}_stats -errts ${h_out}_errts" > ${h_out}_deconv.sh
 }
+
+
+
+
+### --- Get Timing Files --- ###
+#
+# Copy appropriate timing file according
+# to stimcode
+
+timingDir=${workDir}/timing_files
+
+if [ ! -f ${timingDir}/${deconTiming[0]}.01.1D ]; then
+
+	mkdir $timingDir
+	
+	case $stimcode in 
+		132)
+			cp ${timingRaw}/BeVect1.txt ${timingDir}/BehVect.txt
+			;;
+		231)
+			cp ${timingRaw}/BeVect2.txt ${timingDir}/BehVect.txt
+			;;
+		123)
+			cp ${timingRaw}/BeVect3.txt ${timingDir}/BehVect.txt
+			;;
+		213)
+			cp ${timingRaw}/BeVect4.txt ${timingDir}/BehVect.txt
+			;;
+		312)
+			cp ${timingRaw}/BeVect5.txt ${timingDir}/BehVect.txt
+			;;
+		321)
+			cp ${timingRaw}/BeVect5.txt ${timingDir}/BehVect.txt
+			;;
+	esac
+	
+	cd $timingDir
+	make_stim_times.py -file BehVect.txt -prefix WP_behVect -tr 5 -nruns 3 -nt 78 -offset 0
+	cd $workDir
+fi
 
 
 
