@@ -3,7 +3,6 @@
 #SBATCH --time=30:00:00   # walltime
 #SBATCH --ntasks=6   # number of processor cores (i.e. tasks)
 #SBATCH --nodes=1   # number of nodes
-#SBATCH -C 'rhel7'   # RHEL 7
 #SBATCH --mem-per-cpu=8gb   # memory per CPU core
 #SBATCH -J "TS2"   # job name
 
@@ -43,6 +42,7 @@ export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
 
 subj=$1
 testMode=$2
+stimCode=$3
 
 
 ### --- Experimenter input --- ###
@@ -52,29 +52,21 @@ testMode=$2
 parDir=~/compute/SleepBrain_BIDS					  			# parent dir, where derivatives is located
 workDir=${parDir}/derivatives/$subj
 
-txtFile=1														# whether timing files are in txt format (1) or 1D (0)
-txtTime=1														# if txt file has block duration (1:3) for pmBLOCK (1=on)
+txtFile=0														# whether timing files are in txt format (1) or 1D (0)
+txtTime=0														# if txt file has block duration (1:3) for pmBLOCK (1=on)
 runDecons=1														# toggle for running reml scripts and post hoc (1=on) or just writing scripts (0)
 
-deconNum=(3)													# See Note 4 above
-deconPref=(StimBlk Blk Int)										# array of prefix for each planned decon (length must equal sum of $deconNum)
+deconNum=(1)													# See Note 4 above
+deconPref=(PherOlf)												# array of prefix for each planned decon (length must equal sum of $deconNum)
+namPherOlf=(Foo Bar Lav LavT P1 P1T P2 P2T)						# "Foo" of namFoo matches a $deconPref value, one string per timing file (e.g. deconPref=(SpT1); namSpT1=(Hit CR Miss FA))
 
 
-## For 1D timing files
-#deconLen=(3)													# trial duration for each Phase (argument for BLOCK in deconvolution). Use when $txtFile=0 or $txtTime=0
-#deconTiming=(Test1_TF_4_behVect)								# array of timing files for each planned deconvolution (length must == $deconPref)
-
-
-# For txt timing files
-txtStimBlk=(${subj}_TF_Stim_plus_Blk.txt ${subj}_TF_Fbk_all.txt ${subj}_TF_GFbk.txt)
-txtBlk=(${subj}_TF_{Stim,Blk,Fbk_all,GFbk}.txt)
-txtInt=(${subj}_TF_{Stim,Blk,Fbk_int,Fbk_not,GFbk}.txt)
+# For 1D timing files
+deconLen=(5)													# trial duration for each Phase (argument for BLOCK in deconvolution). Use when $txtFile=0 or $txtTime=0
+deconTiming=(WP_behVect)								# array of timing files for each planned deconvolution (length must == $deconPref)
 
 
 # Label beh sub-bricks, per decon
-namStimBlk=(StimBlk Fbk GFbk)									# "Foo" of namFoo matches a $deconPref value, one string per timing file (e.g. deconPref=(SpT1); namSpT1=(Hit CR Miss FA))
-namBlk=(Stim Blk Fbk GFbk)
-namInt=(Stim Blk FbkI FbkN GFbk)
 
 
 
