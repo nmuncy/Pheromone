@@ -49,8 +49,8 @@ priorDir=${tempDir}/priors_ACT
 
 blip=0										# blip toggle (1=on)
 
-phaseArr=(Odor)								# Each PHASE of experiment, in order (TEST1 precedes TEST2 but followed STUDY). This is absolutely necessary - so put something here
-blockArr=(3)								# number of blocks (runs) in each phase. E.g. STUDY had 1 block, TEST1 had 2 blocks. INTEGER!
+phaseArr=(Odor)								# Each PHASE of experiment, in order.
+blockArr=(3)								# number of blocks (runs) in each phase.
 phaseLen=${#phaseArr[@]}
 
 
@@ -470,19 +470,6 @@ fi
 
 
 ### segment tissue class, generate masks
-
-## AFNI way
-#3dSeg -anat final_anat+tlrc -mask AUTO -classes 'CSF ; GM ; WM'
-
-#for j in CSF GM WM; do
-
-	#3dmask_tool -input Segsy/Classes+tlrc"<${j}>" -prefix tmp_mask_$j
-	#3dresample -master ${block[0]}_volreg_clean+tlrc -rmode NN -input tmp_mask_${j}+tlrc -prefix final_mask_${j}
-	#3dmask_tool -input Segsy/Classes+tlrc"<${j}>" -dilate_input -1 -prefix tmp_mask_${j}_eroded
-	#3dresample -master ${block[0]}_volreg_clean+tlrc -rmode NN -input tmp_mask_${j}_eroded+tlrc -prefix final_mask_${j}_eroded
-#done
-
-
 # seg tissue class, with Atropos priors, for REML step
 if [ ! -f final_mask_GM_eroded+tlrc.HEAD ]; then
 
