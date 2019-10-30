@@ -49,7 +49,7 @@ stimCode=$3
 #
 # Change parameters for your study in this section.
 
-parDir=~/compute/SleepBrain_BIDS					  			# parent dir, where derivatives is located
+parDir=~/compute/WiscoPhero							  			# parent dir, where derivatives is located
 workDir=${parDir}/derivatives/$subj
 timingRaw=${parDir}/stimuli/stim_vectors
 
@@ -59,12 +59,12 @@ runDecons=1														# toggle for running reml scripts and post hoc (1=on) o
 
 deconNum=(1)													# See Note 4 above
 deconPref=(PherOlf)												# array of prefix for each planned decon (length must equal sum of $deconNum)
-namPherOlf=(ENI1 ENI2 Lav LavT P1 P1T P2 P2T)						# "Foo" of namFoo matches a $deconPref value, one string per timing file (e.g. deconPref=(SpT1); namSpT1=(Hit CR Miss FA))
+namPherOlf=(ENI1 ENI2 Lav LavT P1 P1T P2 P2T)					# "Foo" of namFoo matches a $deconPref value, one string per timing file (e.g. deconPref=(SpT1); namSpT1=(Hit CR Miss FA))
 
 
 # For 1D timing files
 deconLen=(5)													# trial duration for each Phase (argument for BLOCK in deconvolution). Use when $txtFile=0 or $txtTime=0
-deconTiming=(WP_behVect)								# array of timing files for each planned deconvolution (length must == $deconPref)
+deconTiming=(WP_behVect)										# array of timing files for each planned deconvolution (length must == $deconPref)
 
 
 
@@ -128,15 +128,15 @@ if [ $phaseLen != ${#deconNum[@]} ]; then
 	exit 3
 fi
 
-if [ $txtFile != 1 ]; then
-	tfCount=`ls timing_files/*.01.1D | wc -l`
-	if [ $tfCount == 0 ]; then
-		echo "" >&2
-		echo "Did not detect dir \"timing_files\" or timing_files/*01.1D in $workDir. Exit 4" >&2
-		echo "" >&2
-		exit 4
-	fi
-fi
+# if [ $txtFile != 1 ]; then
+# 	tfCount=`ls timing_files/*.01.1D | wc -l`
+# 	if [ $tfCount == 0 ]; then
+# 		echo "" >&2
+# 		echo "Did not detect dir \"timing_files\" or timing_files/*01.1D in $workDir. Exit 4" >&2
+# 		echo "" >&2
+# 		exit 4
+# 	fi
+# fi
 
 if [ $txtTime != 1 ] && [ ${#deconLen[@]} -lt 1 ]; then
 	echo >&2
@@ -277,28 +277,41 @@ if [ ! -f ${timingDir}/${deconTiming[0]}.01.1D ]; then
 
 	mkdir $timingDir
 	
+	# use case to solve the ridiculous naming conventions
 	case $stimCode in 
 		132)
-			timingFile=${timingRaw}/BeVect1.txt
+			cp ${timingRaw}/BeVect1.txt ${timingDir}/tmp_behVect.txt
 			;;
 		231)
-			timingFile=${timingRaw}/BeVect2.txt
+			cp ${timingRaw}/BeVect2.txt ${timingDir}/tmp_behVect.txt
 			;;
 		123)
-			timingFile=${timingRaw}/BeVect3.txt
+			cp ${timingRaw}/BeVect3.txt ${timingDir}/tmp_behVect.txt
 			;;
 		213)
-			timingFile=${timingRaw}/BeVect4.txt
+			cp ${timingRaw}/BeVect4.txt ${timingDir}/tmp_behVect.txt
 			;;
 		312)
-			timingFile=${timingRaw}/BeVect5.txt
+			cp ${timingRaw}/BeVect5.txt ${timingDir}/tmp_behVect.txt
 			;;
 		321)
-			timingFile=${timingRaw}/BeVect6.txt
+			cp ${timingRaw}/BeVect6.txt ${timingDir}/tmp_behVect.txt
 			;;
 	esac
-	
-	make_stim_times.py -file $timingFile -prefix ${timingDir}/WP_behVect -tr 5 -nruns 3 -nt 78 -offset 0
+
+
+	# make timing files - this is hardcoded for WiscoPhero
+	make_stim_times.py -files ${timingDir}/tmp_behVect.txt -prefix WP_behVect -tr 5 -nruns 3 -nt 78 -offset 0
+	rm ${timingDir}/tmp_behVect.txt
+
+
+	# check
+	if [ ! -f ${timingDir}/${deconTiming[0]}.01.1D ]; then
+		echo >&2
+		echo "Problem with making timing files. Exit 4" >&2
+		echo >&2
+		exit 4
+	fi
 fi
 
 
@@ -372,7 +385,8 @@ c=0; count=0; while [ $c -lt $phaseLen ]; do
 		else
 
 			holdName=($(eval echo \${nam${out}[@]}))
-			GenDecon $phase ${blockArr[$c]} ${deconTiming[$count]} ${deconLen[$c]} "$input" $out ${#holdName[@]}
+			# GenDecon $phase ${blockArr[$c]} ${deconTiming[$count]} ${deconLen[$c]} "$input" $out ${#holdName[@]}
+			GenDecon $phase ${blockArr[$c]} ${deconTiming[$count]} ${deconLen[$c]} "$input" $out ${holdName[@]}
 		fi
 
 		# run script
