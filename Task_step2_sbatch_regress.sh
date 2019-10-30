@@ -67,9 +67,6 @@ deconLen=(5)													# trial duration for each Phase (argument for BLOCK in 
 deconTiming=(WP_behVect)								# array of timing files for each planned deconvolution (length must == $deconPref)
 
 
-# Label beh sub-bricks, per decon
-
-
 
 
 ### --- Set up --- ###
@@ -147,6 +144,7 @@ if [ $txtTime != 1 ] && [ ${#deconLen[@]} -lt 1 ]; then
 	echo >&2
 	exit 5
 fi
+
 
 
 
@@ -271,7 +269,7 @@ GenDecon (){
 ### --- Get Timing Files --- ###
 #
 # Copy appropriate timing file according
-# to stimcode
+# to stimCode
 
 timingDir=${workDir}/timing_files
 
@@ -279,30 +277,28 @@ if [ ! -f ${timingDir}/${deconTiming[0]}.01.1D ]; then
 
 	mkdir $timingDir
 	
-	case $stimcode in 
+	case $stimCode in 
 		132)
-			cp ${timingRaw}/BeVect1.txt ${timingDir}/BehVect.txt
+			timingFile=${timingRaw}/BeVect1.txt
 			;;
 		231)
-			cp ${timingRaw}/BeVect2.txt ${timingDir}/BehVect.txt
+			timingFile=${timingRaw}/BeVect2.txt
 			;;
 		123)
-			cp ${timingRaw}/BeVect3.txt ${timingDir}/BehVect.txt
+			timingFile=${timingRaw}/BeVect3.txt
 			;;
 		213)
-			cp ${timingRaw}/BeVect4.txt ${timingDir}/BehVect.txt
+			timingFile=${timingRaw}/BeVect4.txt
 			;;
 		312)
-			cp ${timingRaw}/BeVect5.txt ${timingDir}/BehVect.txt
+			timingFile=${timingRaw}/BeVect5.txt
 			;;
 		321)
-			cp ${timingRaw}/BeVect5.txt ${timingDir}/BehVect.txt
+			timingFile=${timingRaw}/BeVect6.txt
 			;;
 	esac
 	
-	cd $timingDir
-	make_stim_times.py -file BehVect.txt -prefix WP_behVect -tr 5 -nruns 3 -nt 78 -offset 0
-	cd $workDir
+	make_stim_times.py -file $timingFile -prefix ${timingDir}/WP_behVect -tr 5 -nruns 3 -nt 78 -offset 0
 fi
 
 
