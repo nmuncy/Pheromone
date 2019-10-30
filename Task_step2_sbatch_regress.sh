@@ -59,7 +59,7 @@ runDecons=1														# toggle for running reml scripts and post hoc (1=on) o
 
 deconNum=(1)													# See Note 4 above
 deconPref=(PherOlf)												# array of prefix for each planned decon (length must equal sum of $deconNum)
-namPherOlf=(Foo Bar Lav LavT P1 P1T P2 P2T)						# "Foo" of namFoo matches a $deconPref value, one string per timing file (e.g. deconPref=(SpT1); namSpT1=(Hit CR Miss FA))
+namPherOlf=(ENI1 ENI2 Lav LavT P1 P1T P2 P2T)						# "Foo" of namFoo matches a $deconPref value, one string per timing file (e.g. deconPref=(SpT1); namSpT1=(Hit CR Miss FA))
 
 
 # For 1D timing files

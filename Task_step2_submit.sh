@@ -14,8 +14,8 @@ outDir=${slurmDir}/TS2_${time}
 mkdir -p $outDir
 
 
-subjList=(`cat ${docDir}/stim_order | awk '{print $1}'`)
-stimList=(`cat ${docDir}/stim_order | awk '{print $2}'`)
+subjList=(`cat ${docDir}/stim_order.txt | awk '{print $1}'`)
+stimList=(`cat ${docDir}/stim_order.txt | awk '{print $2}'`)
 
 cd ${workDir}/derivatives
 c=0; while [ $c -lt ${#subjList[@]} ]; do
@@ -23,12 +23,12 @@ c=0; while [ $c -lt ${#subjList[@]} ]; do
 	subj=sub-${subjList[$c]}
 	if [ -d $subj ]; then
 
-		[ $i == sub-101 ]; test=$?
+		[ $subj == sub-101 ]; test=$?
 
 	    sbatch \
 	    -o ${outDir}/output_TS2_${subj}.txt \
 	    -e ${outDir}/error_TS2_${subj}.txt \
-	    ${scriptDir}/Task_step2_sbatch_regress.sh $i $test ${stimList[$c]}
+	    ${scriptDir}/Task_step2_sbatch_regress.sh $subj $test ${stimList[$c]}
 
 	    sleep 1
 	fi
