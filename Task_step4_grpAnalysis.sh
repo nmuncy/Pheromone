@@ -46,7 +46,7 @@ mask=Intersection_GM_mask+tlrc								# this will be made, just specify name for
 
 # grpAnalysis
 doMVM=1														# MVM (1)
-runIt=0														# whether ETAC/MVM scripts actually run (and not just written) (1)
+runIt=1														# whether ETAC/MVM scripts actually run (and not just written) (1)
 
 thr=0.3														# thresh value for Group_EPI_mask, ref Group_EPI_mean
 blurM=2														# blur multiplier, float/int
@@ -353,6 +353,18 @@ if [ $doMVM == 1 ]; then
 					name2=$(eval echo \${${nam2}[$arrCount]})
 
 					conVar+="-gltLabel $gltCount ${bsLab}_${name1}-${name2} -gltCode $gltCount '${bsVars}: $bsCon WSVARS: 1*$name1 -1*$name2' "
+				done
+
+
+				## Patch - add more post-hoc tests
+				# contrast sex on each stimulus
+				arrWS=(`echo $wsArr | fold -w1`)
+				for z in ${arrWS[@]}; do
+
+					gltCount=$[$gltCount+1]
+					eval declare -a nam=(nam${z})
+					name=$(eval echo \${${nam}[$arrCount]})
+					conVar+="-gltLabel $gltCount ${bsLab}_$name -gltCode $gltCount '${bsVars}: $bsCon WSVARS: 1*$name' "
 				done
 			done
 
