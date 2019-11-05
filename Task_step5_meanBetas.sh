@@ -73,17 +73,21 @@ c=0; while [ $c -lt ${#maskArr[@]} ]; do
 	> $print
 
 	for i in ${mask}_c*.HEAD; do
+
+		maskClust=${i%.*}
+		numClust=${maskClust##*_}
+		echo $numClust >> $print
+
 		for j in ${workDir}/derivatives/s*; do
 
-			cluster=${i%.*}
 			subj=${j##*\/}
-
 			MatchString "$subj" "${arrRem[@]}"
 			if [ $? == 1 ]; then
-				stats=`3dROIstats -mask $cluster "${j}/${file}[${betaArr[$c]}]"`
+				stats=`3dROIstats -mask $maskClust "${j}/${file}[${betaArr[$c]}]"`
 				echo "$subj $stats" >> $print
 			fi
 		done
+		echo "" >> $print
 	done
 
 	let c+=1
