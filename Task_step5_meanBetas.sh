@@ -4,7 +4,7 @@
 #SBATCH --ntasks=2   # number of processor cores (i.e. tasks)
 #SBATCH --nodes=1   # number of nodes
 #SBATCH --mem-per-cpu=4gb   # memory per CPU core
-#SBATCH -J "TS6"   # job name
+#SBATCH -J "TS5"   # job name
 
 # Compatibility variables for PBS. Delete if not needed.
 export PBS_NODEFILE=`/fslapps/fslutils/generate_pbs_nodefile`
@@ -26,7 +26,7 @@ maskDir=${grpDir}/mvm_masks
 betaDir=${grpDir}/mvm_betas
 
 
-maskArr=("F-M_Lav-P2")
+maskArr=(F-M_Lav-P2)
 scanArr=(PherOlf)
 betaArr=("5,13")
 
@@ -75,8 +75,10 @@ c=0; while [ $c -lt ${#maskArr[@]} ]; do
 	for i in ${mask}_c*.HEAD; do
 
 		maskClust=${i%.*}
-		numClust=${maskClust##*_}
-		echo $numClust >> $print
+		tmp=${maskClust##*_}
+		numClust=${tmp%+*}
+
+		echo "Mask $numClust" >> $print
 
 		for j in ${workDir}/derivatives/s*; do
 
